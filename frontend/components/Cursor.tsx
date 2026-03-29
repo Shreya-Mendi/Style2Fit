@@ -61,7 +61,7 @@ export default function Cursor() {
         style={{
           width: 6,
           height: 6,
-          background: "var(--dusty-rose)",
+          background: "var(--coral)",
           borderRadius: "50%",
           position: "fixed",
           pointerEvents: "none",
@@ -74,7 +74,7 @@ export default function Cursor() {
         style={{
           width: 32,
           height: 32,
-          border: "1px solid var(--rose)",
+          border: "1.5px solid var(--coral)",
           borderRadius: "50%",
           position: "fixed",
           pointerEvents: "none",

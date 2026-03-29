@@ -22,29 +22,36 @@ export default function Marquee() {
 
   return (
     <div
-      className="overflow-hidden py-5"
+      className="overflow-hidden py-4"
       style={{
-        borderTop: "1px solid var(--blush)",
-        borderBottom: "1px solid var(--blush)",
-        background: "var(--cream)",
+        borderTop: "1px solid var(--border)",
+        borderBottom: "1px solid var(--border)",
+        background: "var(--canvas-warm)",
       }}
     >
       <div className="marquee-track">
         {doubled.map((item, i) => (
           <span
             key={i}
-            className="flex items-center gap-6 px-6"
-            style={{ color: "var(--taupe)", fontWeight: 300 }}
+            className="flex items-center gap-5 px-5"
+            style={{ color: "var(--ink-muted)" }}
           >
-            <span className="text-xs tracking-[0.25em] uppercase whitespace-nowrap">
+            <span
+              className="font-body text-xs tracking-[0.2em] uppercase whitespace-nowrap"
+              style={{ fontWeight: 500 }}
+            >
               {item}
             </span>
             <span
-              className="font-serif text-base italic"
-              style={{ color: "var(--rose)" }}
-            >
-              ✦
-            </span>
+              style={{
+                display: "inline-block",
+                width: 6,
+                height: 6,
+                borderRadius: "50%",
+                background: "var(--coral)",
+                flexShrink: 0,
+              }}
+            />
           </span>
         ))}
       </div>

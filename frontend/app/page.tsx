@@ -3,216 +3,391 @@
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Cursor from "@/components/Cursor";
-import Marquee from "@/components/Marquee";
 import OutfitForm from "@/components/OutfitForm";
 import OutfitResult from "@/components/OutfitResult";
+import BeforeAfter from "@/components/tabs/BeforeAfter";
+import Closet from "@/components/tabs/Closet";
+import Evaluations from "@/components/tabs/Evaluations";
 import type { OutfitResponse } from "@/types";
 
+type Tab = "generate" | "results" | "compare" | "closet" | "evals";
+
+const TABS: { id: Tab; label: string; emoji: string }[] = [
+  { id: "generate", label: "Generate", emoji: "✨" },
+  { id: "results",  label: "Results",  emoji: "👗" },
+  { id: "compare",  label: "Before/After", emoji: "🔀" },
+  { id: "closet",   label: "Closet",   emoji: "🧺" },
+  { id: "evals",    label: "Evals",    emoji: "📊" },
+];
+
+const STEPS = [
+  {
+    n: "01",
+    label: "Situation",
+    desc: "Casual text prompt, just like texting a friend",
+    bg: "card-coral",
+    accent: "var(--coral)",
+    tape: "card-tape-left",
+    rot: "-rotate-1",
+  },
+  {
+    n: "02",
+    label: "Outfit Plan",
+    desc: "Fine-tuned LLaMA 3.1 8B structures top, bottom, shoes & aesthetic",
+    bg: "card-mint",
+    accent: "var(--mint)",
+    tape: "",
+    rot: "rotate-1",
+  },
+  {
+    n: "03",
+    label: "Visual",
+    desc: "Fine-tuned SDXL renders the complete look, head to toe",
+    bg: "card-sky",
+    accent: "var(--sky)",
+    tape: "card-tape-right",
+    rot: "-rotate-1",
+  },
+];
+
+const pageVariants = {
+  hidden:  { opacity: 0, y: 16 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.55, ease: [0.16, 1, 0.3, 1] as [number,number,number,number] } },
+  exit:    { opacity: 0, y: -8, transition: { duration: 0.22 } },
+};
+
+/* Tiny inline doodle SVGs */
+const SparkleIcon = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6z"/>
+  </svg>
+);
+
 export default function Home() {
+  const [activeTab, setActiveTab] = useState<Tab>("generate");
   const [result, setResult] = useState<OutfitResponse | null>(null);
   const [loading, setLoading] = useState(false);
-  const resultRef = useRef<HTMLDivElement>(null);
+  const contentRef = useRef<HTMLDivElement>(null);
+
+  const handleResult = (r: OutfitResponse) => {
+    setResult(r);
+    setActiveTab("results");
+  };
 
   useEffect(() => {
-    if (result && resultRef.current) {
-      resultRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
-    }
-  }, [result]);
+    contentRef.current?.scrollTo({ top: 0, behavior: "smooth" });
+  }, [activeTab]);
 
   return (
-    <>
+    <div className="min-h-screen flex flex-col">
       <Cursor />
 
-      {/* Nav */}
-      <nav className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-10 py-6"
-        style={{ background: "linear-gradient(to bottom, rgba(250,248,245,0.95), transparent)" }}>
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.3, duration: 0.8 }}
+      {/* ── Floating toolbar ── */}
+      <header
+        className="fixed top-4 left-1/2 -translate-x-1/2 z-50 flex items-center gap-1.5 px-3 py-2 rounded-full"
+        style={{
+          background: "rgba(253,250,246,0.88)",
+          backdropFilter: "blur(24px)",
+          WebkitBackdropFilter: "blur(24px)",
+          border: "1.5px solid rgba(0,0,0,0.08)",
+          boxShadow: "0 4px 28px rgba(0,0,0,0.07)",
+          maxWidth: "calc(100vw - 2rem)",
+        }}
+      >
+        {/* Logo */}
+        <span
+          className="font-display text-sm font-semibold px-2 shrink-0"
+          style={{ color: "var(--ink)", letterSpacing: "-0.02em" }}
         >
-          <span className="font-serif text-xl tracking-[0.15em]" style={{ color: "var(--charcoal)" }}>
-            STYLE2FIT
-          </span>
-        </motion.div>
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.5, duration: 0.8 }}
-          className="flex items-center gap-8"
-        >
-          <span className="text-xs tracking-[0.2em] uppercase" style={{ color: "var(--taupe)", fontWeight: 300 }}>
-            AI Stylist
-          </span>
-          <div className="w-px h-4" style={{ background: "var(--blush)" }} />
-          <span className="text-xs tracking-[0.2em] uppercase" style={{ color: "var(--taupe)", fontWeight: 300 }}>
-            AIPI 540
-          </span>
-        </motion.div>
-      </nav>
+          style2fit
+        </span>
 
-      {/* Hero */}
-      <section className="relative min-h-screen flex flex-col" style={{ background: "var(--ivory)" }}>
-        {/* Large editorial headline */}
-        <div className="flex-1 flex flex-col justify-end pb-16 px-10 pt-32">
-          <motion.div
-            initial={{ opacity: 0, y: 40 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
-            className="max-w-6xl"
-          >
-            <p className="text-xs tracking-[0.3em] uppercase mb-6" style={{ color: "var(--taupe)", fontWeight: 300 }}>
-              Fine-tuned LLM × Fine-tuned SDXL
-            </p>
-            <h1 className="font-serif leading-none mb-2"
-              style={{
-                fontSize: "clamp(4rem, 12vw, 10rem)",
-                color: "var(--charcoal)",
-                fontWeight: 300,
-                letterSpacing: "-0.01em"
-              }}>
-              Dress
-            </h1>
-            <h1 className="font-serif leading-none mb-2"
-              style={{
-                fontSize: "clamp(4rem, 12vw, 10rem)",
-                color: "var(--charcoal)",
-                fontWeight: 300,
-                fontStyle: "italic",
-                letterSpacing: "-0.01em"
-              }}>
-              the
-            </h1>
-            <h1 className="font-serif leading-none"
-              style={{
-                fontSize: "clamp(4rem, 12vw, 10rem)",
-                color: "var(--charcoal)",
-                fontWeight: 300,
-                letterSpacing: "-0.01em"
-              }}>
-              Moment.
-            </h1>
-          </motion.div>
+        <div className="w-px h-4 shrink-0 mx-1" style={{ background: "var(--border)" }} />
 
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.6, duration: 1 }}
-            className="mt-12 flex items-end justify-between"
-          >
-            <p className="text-sm max-w-xs leading-relaxed" style={{ color: "var(--taupe)", fontWeight: 300 }}>
-              Describe your situation the way you&apos;d text a friend.<br />
-              Get a complete outfit. See it rendered on a person.
-            </p>
-            <div className="hidden md:flex items-center gap-3" style={{ color: "var(--taupe)" }}>
-              <div className="w-12 h-px" style={{ background: "var(--blush)" }} />
-              <span className="text-xs tracking-[0.2em] uppercase" style={{ fontWeight: 300 }}>Scroll</span>
-            </div>
-          </motion.div>
-        </div>
-
-        {/* Decorative rule */}
-        <motion.div
-          initial={{ scaleX: 0 }}
-          animate={{ scaleX: 1 }}
-          transition={{ delay: 0.8, duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
-          style={{ originX: 0, height: "1px", background: "var(--blush)", margin: "0 2.5rem" }}
-        />
-      </section>
-
-      {/* Marquee strip */}
-      <Marquee />
-
-      {/* Form section */}
-      <section className="px-10 py-24" style={{ background: "var(--ivory)" }}>
-        <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-20 items-start">
-          {/* Left: copy */}
-          <div className="lg:sticky lg:top-32">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
-            >
-              <p className="text-xs tracking-[0.3em] uppercase mb-8" style={{ color: "var(--dusty-rose)", fontWeight: 300 }}>
-                — How it works
-              </p>
-              <h2 className="font-serif mb-8"
+        {/* Tabs */}
+        <nav className="flex items-center gap-0.5">
+          {TABS.map((tab) => {
+            const active = activeTab === tab.id;
+            return (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                className="relative px-2.5 py-1.5 font-body text-xs rounded-full transition-all"
                 style={{
-                  fontSize: "clamp(2.5rem, 5vw, 4rem)",
-                  color: "var(--charcoal)",
-                  fontWeight: 300,
-                  lineHeight: 1.1,
-                }}>
-                Tell me what&apos;s<br />
-                <em>happening.</em>
-              </h2>
-              <p className="text-sm leading-loose mb-12" style={{ color: "var(--taupe)", fontWeight: 300, maxWidth: "34ch" }}>
-                Type your situation — coffee date, job interview, rooftop bar, first day at the internship.
-                The AI reads the vibe, builds a full outfit, and renders it on a person.
-              </p>
+                  fontWeight: active ? 600 : 400,
+                  color: active ? "var(--coral)" : "var(--ink-muted)",
+                  cursor: "none",
+                  background: active ? "var(--coral-light)" : "transparent",
+                  border: active ? "1px solid rgba(243,123,117,0.3)" : "1px solid transparent",
+                }}
+              >
+                <span className="mr-1 text-[10px]">{tab.emoji}</span>
+                {tab.label}
+                {tab.id === "results" && result && (
+                  <span
+                    className="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full"
+                    style={{ background: "var(--coral)" }}
+                  />
+                )}
+              </button>
+            );
+          })}
+        </nav>
 
-              {/* Steps */}
-              <div className="space-y-8">
-                {[
-                  { n: "01", label: "Situation", desc: "Casual text prompt, just like texting a friend" },
-                  { n: "02", label: "Outfit Plan", desc: "Fine-tuned LLM structures top, bottom, shoes, aesthetic" },
-                  { n: "03", label: "Visual", desc: "Fine-tuned SDXL renders the complete look, head to toe" },
-                ].map((step) => (
-                  <div key={step.n} className="flex items-start gap-6">
-                    <span className="font-serif text-sm mt-0.5" style={{ color: "var(--rose)", fontWeight: 400, minWidth: "2rem" }}>
-                      {step.n}
-                    </span>
-                    <div>
-                      <p className="text-xs tracking-[0.15em] uppercase mb-1" style={{ color: "var(--charcoal)", fontWeight: 300 }}>
-                        {step.label}
-                      </p>
-                      <p className="text-xs leading-relaxed" style={{ color: "var(--taupe)", fontWeight: 300 }}>
-                        {step.desc}
-                      </p>
+        <div className="w-px h-4 shrink-0 mx-1" style={{ background: "var(--border)" }} />
+
+        <span
+          className="font-body text-[10px] shrink-0 px-2.5 py-1 rounded-full font-semibold"
+          style={{ background: "var(--gold-light)", color: "#7a5e00", border: "1px solid rgba(245,200,66,0.4)" }}
+        >
+          AIPI 540
+        </span>
+      </header>
+
+      {/* ── Colourful marquee strip ── */}
+      <div className="pt-[68px]">
+        <div
+          className="overflow-hidden py-3"
+          style={{ borderTop: "1.5px solid var(--border)", borderBottom: "1.5px solid var(--border)", background: "var(--canvas-warm)" }}
+        >
+          <div className="marquee-track">
+            {[
+              { text: "Coffee Date", color: "var(--coral)" },
+              { text: "Old Money", color: "var(--mint)" },
+              { text: "Clean Girl", color: "var(--sky)" },
+              { text: "Dark Academia", color: "var(--lavender)" },
+              { text: "Rooftop Bar", color: "var(--peach)" },
+              { text: "First Day Fit", color: "var(--pink)" },
+              { text: "Street Style", color: "var(--coral)" },
+              { text: "Coastal Grandma", color: "var(--gold)" },
+              { text: "Soft Girl Era", color: "var(--mint)" },
+              { text: "Birthday Dinner", color: "var(--coral)" },
+              { text: "Museum Afternoon", color: "var(--sky)" },
+              { text: "Effortless Chic", color: "var(--lavender)" },
+              { text: "Concert Night", color: "var(--peach)" },
+              { text: "Coffee Date", color: "var(--coral)" },
+              { text: "Old Money", color: "var(--mint)" },
+              { text: "Clean Girl", color: "var(--sky)" },
+              { text: "Dark Academia", color: "var(--lavender)" },
+              { text: "Rooftop Bar", color: "var(--peach)" },
+              { text: "First Day Fit", color: "var(--pink)" },
+              { text: "Street Style", color: "var(--coral)" },
+              { text: "Coastal Grandma", color: "var(--gold)" },
+              { text: "Soft Girl Era", color: "var(--mint)" },
+              { text: "Birthday Dinner", color: "var(--coral)" },
+              { text: "Museum Afternoon", color: "var(--sky)" },
+              { text: "Effortless Chic", color: "var(--lavender)" },
+            ].map((item, i) => (
+              <span key={i} className="flex items-center gap-4 px-4">
+                <span
+                  className="font-display text-xs tracking-[0.18em] uppercase whitespace-nowrap"
+                  style={{ color: item.color, fontWeight: 500 }}
+                >
+                  {item.text}
+                </span>
+                <span
+                  style={{ display: "inline-block", width: 5, height: 5, borderRadius: "50%", background: item.color, opacity: 0.6 }}
+                />
+              </span>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* ── Main content ── */}
+      <main ref={contentRef} className="flex-1 px-5 md:px-10 py-10 max-w-6xl mx-auto w-full">
+        <AnimatePresence mode="wait">
+
+          {/* ── Tab 1: Generate ── */}
+          {activeTab === "generate" && (
+            <motion.div key="generate" variants={pageVariants} initial="hidden" animate="visible" exit="exit">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-14 items-start">
+
+                {/* Left: hero copy + process cards */}
+                <div className="lg:sticky lg:top-28 space-y-8">
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.7, ease: [0.16,1,0.3,1] }}
+                  >
+                    {/* Label */}
+                    <div className="flex items-center gap-2 mb-4">
+                      <span className="badge" style={{ background: "var(--coral-light)", color: "var(--coral)" }}>
+                        <SparkleIcon /> How it works
+                      </span>
                     </div>
+
+                    <h1
+                      className="font-display mb-4"
+                      style={{
+                        fontSize: "clamp(2.4rem,5.5vw,4rem)",
+                        color: "var(--ink)",
+                        fontWeight: 600,
+                        lineHeight: 1.05,
+                        letterSpacing: "-0.025em",
+                      }}
+                    >
+                      Tell me what&apos;s{" "}
+                      <span
+                        className="font-handwritten"
+                        style={{ color: "var(--coral)", fontWeight: 500, fontSize: "1.08em" }}
+                      >
+                        happening.
+                      </span>
+                    </h1>
+
+                    <p
+                      className="font-body text-sm leading-relaxed"
+                      style={{ color: "var(--ink-muted)", fontWeight: 400, maxWidth: "34ch" }}
+                    >
+                      Type your situation — coffee date, job interview, rooftop bar.
+                      The AI reads the vibe and builds a full outfit.
+                    </p>
+                  </motion.div>
+
+                  {/* Process steps — coloured sticky cards */}
+                  <div className="space-y-4">
+                    {STEPS.map((step, i) => (
+                      <motion.div
+                        key={step.n}
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: 0.15 * i + 0.2, duration: 0.6, ease: [0.16,1,0.3,1] }}
+                        className={`card ${step.bg} ${step.tape} ${step.rot} flex items-start gap-4`}
+                      >
+                        <span
+                          className="font-display text-3xl font-bold shrink-0"
+                          style={{ color: step.accent, lineHeight: 1 }}
+                        >
+                          {step.n}
+                        </span>
+                        <div>
+                          <p className="font-body text-sm font-semibold mb-1" style={{ color: "var(--ink)" }}>
+                            {step.label}
+                          </p>
+                          <p className="font-body text-xs leading-relaxed" style={{ color: "var(--ink-soft)", fontWeight: 400 }}>
+                            {step.desc}
+                          </p>
+                        </div>
+                      </motion.div>
+                    ))}
                   </div>
-                ))}
+
+                  {/* Decorative doodle note */}
+                  <motion.div
+                    initial={{ opacity: 0, rotate: -3 }}
+                    animate={{ opacity: 1, rotate: -2 }}
+                    transition={{ delay: 0.7, duration: 0.6 }}
+                    className="card card-gold card-no-tape float"
+                    style={{ transform: "rotate(-2deg)", maxWidth: 260 }}
+                  >
+                    <p className="font-handwritten text-lg leading-snug" style={{ color: "var(--ink-soft)" }}>
+                      fine-tuned on 1,400+<br />fashion instruction pairs ✦
+                    </p>
+                    <p className="font-body text-xs mt-1" style={{ color: "var(--ink-muted)", fontWeight: 400 }}>
+                      QLoRA · LLaMA 3.1 8B · SDXL
+                    </p>
+                  </motion.div>
+                </div>
+
+                {/* Right: form */}
+                <motion.div
+                  initial={{ opacity: 0, y: 28 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.18, duration: 0.75, ease: [0.16,1,0.3,1] }}
+                  className="card card-cream"
+                >
+                  <p className="font-handwritten text-2xl mb-5" style={{ color: "var(--ink-soft)" }}>
+                    What&apos;s the occasion?
+                  </p>
+                  <OutfitForm onResult={handleResult} onLoading={setLoading} loading={loading} />
+                </motion.div>
               </div>
             </motion.div>
-          </div>
+          )}
 
-          {/* Right: form */}
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.2, duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
-          >
-            <OutfitForm onResult={setResult} onLoading={setLoading} loading={loading} />
-          </motion.div>
-        </div>
-      </section>
+          {/* ── Tab 2: Results ── */}
+          {activeTab === "results" && (
+            <motion.div key="results" variants={pageVariants} initial="hidden" animate="visible" exit="exit">
+              <div className="mb-8">
+                <h2 className="font-display text-3xl md:text-4xl mb-2" style={{ color: "var(--ink)", fontWeight: 600 }}>
+                  Your Outfit{" "}
+                  <span className="font-handwritten" style={{ color: "var(--pink)", fontWeight: 400, fontSize: "0.85em" }}>
+                    ✦
+                  </span>
+                </h2>
+                {!result && !loading && (
+                  <p className="font-body text-sm" style={{ color: "var(--ink-muted)", fontWeight: 400 }}>
+                    Generate an outfit first —{" "}
+                    <button
+                      onClick={() => setActiveTab("generate")}
+                      className="font-body text-sm underline"
+                      style={{ color: "var(--coral)", cursor: "none", background: "none", border: "none" }}
+                    >
+                      go to Generate
+                    </button>
+                  </p>
+                )}
+              </div>
 
-      {/* Result section */}
-      <AnimatePresence>
-        {(result || loading) && (
-          <div ref={resultRef}>
-            <OutfitResult result={result} loading={loading} />
-          </div>
-        )}
-      </AnimatePresence>
+              {(result || loading) && (
+                <OutfitResult result={result} loading={loading} onRegenerate={() => { setResult(null); setActiveTab("generate"); }} />
+              )}
 
-      {/* Footer */}
-      <footer className="px-10 py-16" style={{ borderTop: "1px solid var(--blush)", background: "var(--cream)" }}>
-        <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-start md:items-center justify-between gap-8">
-          <div>
-            <span className="font-serif text-lg tracking-[0.1em]" style={{ color: "var(--charcoal)" }}>STYLE2FIT</span>
-            <p className="text-xs mt-2" style={{ color: "var(--taupe)", fontWeight: 300 }}>
-              Fine-tuned LLaMA 3.1 8B × Fine-tuned SDXL
-            </p>
-          </div>
-          <div className="text-xs space-y-1 text-right" style={{ color: "var(--taupe)", fontWeight: 300 }}>
-            <p>Built for AIPI 540 · Duke University</p>
-            <p>QLoRA + LoRA · Marqo/fashion200k</p>
-          </div>
-        </div>
+              {!result && !loading && (
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.2 }}
+                  className="card card-pink card-no-tape flex flex-col items-center justify-center py-20 text-center"
+                >
+                  <span className="font-handwritten text-7xl block mb-4" style={{ color: "var(--pink)" }}>✦</span>
+                  <p className="font-handwritten text-xl mb-2" style={{ color: "var(--ink-soft)" }}>No outfit yet!</p>
+                  <p className="font-body text-sm" style={{ color: "var(--ink-muted)", fontWeight: 400 }}>
+                    Head to{" "}
+                    <button onClick={() => setActiveTab("generate")} style={{ color: "var(--coral)", cursor: "none", background: "none", border: "none" }} className="font-body text-sm underline">
+                      Generate
+                    </button>{" "}
+                    to create one.
+                  </p>
+                </motion.div>
+              )}
+            </motion.div>
+          )}
+
+          {/* ── Tab 3: Before vs After ── */}
+          {activeTab === "compare" && (
+            <motion.div key="compare" variants={pageVariants} initial="hidden" animate="visible" exit="exit">
+              <BeforeAfter />
+            </motion.div>
+          )}
+
+          {/* ── Tab 4: Closet ── */}
+          {activeTab === "closet" && (
+            <motion.div key="closet" variants={pageVariants} initial="hidden" animate="visible" exit="exit">
+              <Closet />
+            </motion.div>
+          )}
+
+          {/* ── Tab 5: Evaluations ── */}
+          {activeTab === "evals" && (
+            <motion.div key="evals" variants={pageVariants} initial="hidden" animate="visible" exit="exit">
+              <Evaluations />
+            </motion.div>
+          )}
+
+        </AnimatePresence>
+      </main>
+
+      {/* ── Footer ── */}
+      <footer
+        className="shrink-0 py-3 px-6 text-center"
+        style={{ background: "var(--canvas-warm)", borderTop: "1.5px solid var(--border)" }}
+      >
+        <p className="font-body text-xs" style={{ color: "var(--ink-muted)", fontWeight: 400 }}>
+          Fine-tuned LLaMA 3.1 8B &times; Fine-tuned SDXL · Duke University AIPI 540
+        </p>
       </footer>
-    </>
+    </div>
   );
 }

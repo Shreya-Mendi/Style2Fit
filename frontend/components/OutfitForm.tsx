@@ -20,14 +20,34 @@ const AESTHETICS = [
 ];
 
 const EXAMPLES = [
-  "i have a coffee date tmrw what do i wear",
-  "first day at my internship, business casual",
-  "concert this weekend, indie/alt vibe",
-  "birthday dinner at a nice restaurant",
-  "omg i have a presentation today help",
-  "packing for lisbon for a week in april",
-  "going through a dark academia phase help",
+  { text: "coffee date tmrw ☕", pill: "pill-coral" },
+  { text: "internship first day", pill: "pill-mint" },
+  { text: "concert this weekend", pill: "pill-lavender" },
+  { text: "birthday dinner", pill: "pill-pink" },
+  { text: "presentation today", pill: "pill-sky" },
+  { text: "week in lisbon", pill: "pill-gold" },
+  { text: "dark academia era", pill: "pill-peach" },
 ];
+
+const PILL_ACTIVE: Record<string, { bg: string; color: string; border: string }> = {
+  "pill-coral":    { bg: "var(--coral)",    color: "white",   border: "var(--coral)" },
+  "pill-mint":     { bg: "var(--mint)",     color: "white",   border: "var(--mint)" },
+  "pill-lavender": { bg: "var(--lavender)", color: "white",   border: "var(--lavender)" },
+  "pill-pink":     { bg: "var(--pink)",     color: "white",   border: "var(--pink)" },
+  "pill-sky":      { bg: "var(--sky)",      color: "white",   border: "var(--sky)" },
+  "pill-gold":     { bg: "var(--gold)",     color: "#5a4000", border: "var(--gold)" },
+  "pill-peach":    { bg: "var(--peach)",    color: "white",   border: "var(--peach)" },
+};
+
+const PILL_INACTIVE: Record<string, { bg: string; color: string; border: string }> = {
+  "pill-coral":    { bg: "var(--coral-light)",    color: "var(--coral)",    border: "rgba(243,123,117,0.35)" },
+  "pill-mint":     { bg: "var(--mint-light)",     color: "#1e6644",         border: "rgba(109,213,160,0.4)" },
+  "pill-lavender": { bg: "var(--lavender-light)", color: "var(--lavender)", border: "rgba(167,139,250,0.4)" },
+  "pill-pink":     { bg: "var(--pink-light)",     color: "var(--pink)",     border: "rgba(234,137,185,0.4)" },
+  "pill-sky":      { bg: "var(--sky-light)",      color: "var(--sky)",      border: "rgba(107,191,234,0.4)" },
+  "pill-gold":     { bg: "var(--gold-light)",     color: "#7a5e00",         border: "rgba(245,200,66,0.4)" },
+  "pill-peach":    { bg: "var(--peach-light)",    color: "#9b5200",         border: "rgba(255,171,118,0.4)" },
+};
 
 interface Props {
   onResult: (r: OutfitResponse) => void;
@@ -56,19 +76,19 @@ export default function OutfitForm({ onResult, onLoading, loading }: Props) {
       const data = await res.json();
       onResult(data);
     } catch {
-      // handle error silently — result panel will show nothing
+      // silent fail
     } finally {
       onLoading(false);
     }
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-8">
-      {/* Situation textarea */}
+    <form onSubmit={handleSubmit} className="space-y-6">
+      {/* Situation */}
       <div>
         <label
-          className="block text-xs tracking-[0.2em] uppercase mb-4"
-          style={{ color: "var(--charcoal)", fontWeight: 300 }}
+          className="font-body block text-xs tracking-[0.14em] uppercase mb-2.5"
+          style={{ color: "var(--ink-soft)", fontWeight: 600 }}
         >
           What&apos;s the situation?
         </label>
@@ -77,93 +97,86 @@ export default function OutfitForm({ onResult, onLoading, loading }: Props) {
           onChange={(e) => setSituation(e.target.value)}
           placeholder="i have a coffee date tmrw what do i wear"
           rows={4}
-          className="w-full resize-none text-sm leading-relaxed px-5 py-4 transition-all"
+          className="w-full resize-none text-sm leading-relaxed px-4 py-3 transition-all font-body"
           style={{
-            background: "var(--cream)",
-            border: "1px solid var(--blush)",
-            color: "var(--charcoal)",
-            fontFamily: "inherit",
-            fontWeight: 300,
-            borderRadius: 0,
+            background: "var(--canvas)",
+            border: "1.5px solid var(--border)",
+            color: "var(--ink)",
+            fontWeight: 400,
+            borderRadius: 12,
           }}
-          onFocus={(e) => (e.target.style.borderColor = "var(--dusty-rose)")}
-          onBlur={(e) => (e.target.style.borderColor = "var(--blush)")}
+          onFocus={(e) => (e.target.style.borderColor = "var(--coral)")}
+          onBlur={(e) => (e.target.style.borderColor = "var(--border)")}
         />
       </div>
 
-      {/* Aesthetic select */}
+      {/* Aesthetic */}
       <div>
         <label
-          className="block text-xs tracking-[0.2em] uppercase mb-4"
-          style={{ color: "var(--charcoal)", fontWeight: 300 }}
+          className="font-body block text-xs tracking-[0.14em] uppercase mb-2.5"
+          style={{ color: "var(--ink-soft)", fontWeight: 600 }}
         >
-          Aesthetic <span style={{ color: "var(--taupe)" }}>(optional)</span>
+          Aesthetic{" "}
+          <span style={{ color: "var(--ink-muted)", textTransform: "none", letterSpacing: 0, fontWeight: 400 }}>
+            (optional)
+          </span>
         </label>
         <div className="relative">
           <select
             value={aesthetic}
             onChange={(e) => setAesthetic(e.target.value)}
-            className="w-full px-5 py-4 text-sm appearance-none"
+            className="w-full px-4 py-3 text-sm appearance-none font-body"
             style={{
-              background: "var(--cream)",
-              border: "1px solid var(--blush)",
-              color: "var(--charcoal)",
-              fontFamily: "inherit",
-              fontWeight: 300,
-              borderRadius: 0,
+              background: "var(--canvas)",
+              border: "1.5px solid var(--border)",
+              color: "var(--ink)",
+              fontWeight: 400,
+              borderRadius: 12,
               cursor: "none",
             }}
           >
             {AESTHETICS.map((a) => (
-              <option key={a} value={a}>
-                {a}
-              </option>
+              <option key={a} value={a}>{a}</option>
             ))}
           </select>
           <div
-            className="absolute right-5 top-1/2 -translate-y-1/2 pointer-events-none"
-            style={{ color: "var(--taupe)" }}
+            className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-xs"
+            style={{ color: "var(--ink-muted)" }}
           >
             ↓
           </div>
         </div>
       </div>
 
-      {/* Examples */}
+      {/* Example pills */}
       <div>
-        <p className="text-xs tracking-[0.2em] uppercase mb-4" style={{ color: "var(--taupe)", fontWeight: 300 }}>
+        <p
+          className="font-body text-xs tracking-[0.14em] uppercase mb-3"
+          style={{ color: "var(--ink-muted)", fontWeight: 600 }}
+        >
           Try an example
         </p>
         <div className="flex flex-wrap gap-2">
-          {EXAMPLES.map((ex) => (
-            <button
-              key={ex}
-              type="button"
-              onClick={() => setSituation(ex)}
-              className="text-xs px-3 py-2 transition-all"
-              style={{
-                background: situation === ex ? "var(--blush)" : "transparent",
-                border: "1px solid var(--blush)",
-                color: "var(--taupe)",
-                fontFamily: "inherit",
-                fontWeight: 300,
-                borderRadius: 0,
-                cursor: "none",
-              }}
-              onMouseEnter={(e) => {
-                (e.target as HTMLButtonElement).style.background = "var(--blush)";
-                (e.target as HTMLButtonElement).style.color = "var(--charcoal)";
-              }}
-              onMouseLeave={(e) => {
-                if (situation !== ex) {
-                  (e.target as HTMLButtonElement).style.background = "transparent";
-                  (e.target as HTMLButtonElement).style.color = "var(--taupe)";
-                }
-              }}
-            >
-              {ex}
-            </button>
-          ))}
+          {EXAMPLES.map((ex) => {
+            const active = situation === ex.text;
+            const s = active ? PILL_ACTIVE[ex.pill] : PILL_INACTIVE[ex.pill];
+            return (
+              <button
+                key={ex.text}
+                type="button"
+                onClick={() => setSituation(ex.text)}
+                className="pill font-body"
+                style={{
+                  background: s.bg,
+                  color: s.color,
+                  border: `1.5px solid ${s.border}`,
+                  cursor: "none",
+                }}
+              >
+                {ex.text}
+              </button>
+            );
+          })}
         </div>
       </div>
 
@@ -171,25 +184,36 @@ export default function OutfitForm({ onResult, onLoading, loading }: Props) {
       <motion.button
         type="submit"
         disabled={!situation.trim() || loading}
-        whileHover={{ scale: loading ? 1 : 1.01 }}
-        whileTap={{ scale: loading ? 1 : 0.99 }}
-        className="w-full py-5 text-xs tracking-[0.3em] uppercase transition-all relative overflow-hidden"
+        whileHover={{ scale: loading ? 1 : 1.025 }}
+        whileTap={{ scale: loading ? 1 : 0.975 }}
+        className="w-full py-4 text-sm font-body tracking-wide transition-all rounded-full relative overflow-hidden"
         style={{
-          background: situation.trim() && !loading ? "var(--charcoal)" : "var(--blush)",
-          color: situation.trim() && !loading ? "var(--ivory)" : "var(--taupe)",
+          background: situation.trim() && !loading ? "var(--coral)" : "var(--border)",
+          color: situation.trim() && !loading ? "white" : "var(--ink-muted)",
           border: "none",
-          fontFamily: "inherit",
-          fontWeight: 300,
+          fontWeight: 600,
           cursor: "none",
+          letterSpacing: "0.04em",
+        }}
+        onMouseEnter={(e) => {
+          if (situation.trim() && !loading)
+            (e.currentTarget as HTMLButtonElement).style.background = "var(--coral-hover)";
+        }}
+        onMouseLeave={(e) => {
+          if (situation.trim() && !loading)
+            (e.currentTarget as HTMLButtonElement).style.background = "var(--coral)";
         }}
       >
         {loading ? (
-          <span className="flex items-center justify-center gap-3">
-            <span
-              className="inline-block w-3 h-3 rounded-full border border-current pulse-soft"
-              style={{ borderColor: "var(--taupe)" }}
-            />
-            Generating outfit...
+          <span className="flex items-center justify-center gap-2.5">
+            {[0, 0.18, 0.36].map((delay, i) => (
+              <span
+                key={i}
+                className="inline-block w-2 h-2 rounded-full pulse-soft"
+                style={{ background: "white", animationDelay: `${delay}s` }}
+              />
+            ))}
+            <span className="ml-2 font-body text-sm" style={{ fontWeight: 500 }}>Generating outfit...</span>
           </span>
         ) : (
           "Generate Outfit →"
