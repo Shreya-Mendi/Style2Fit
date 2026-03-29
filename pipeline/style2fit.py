@@ -96,11 +96,13 @@ def outfit_to_diffusion_prompt(plan: OutfitPlan) -> str:
     prompt = (
         f"Full body fashion editorial photo of a person wearing {outfit_desc}. "
         f"{plan.aesthetic} aesthetic. "
-        "Soft natural lighting, clean background, professional fashion photography, "
-        "sharp focus, high resolution, realistic fabric textures, complete outfit visible."
+        "Full length shot, head to toe, shoes visible, complete outfit, "
+        "soft natural lighting, clean background, professional fashion photography, "
+        "sharp focus, high resolution, realistic fabric textures."
     )
     negative_prompt = (
-        "cropped, bad anatomy, deformed, extra limbs, blurry, low quality, "
+        "cropped, close up, portrait, headshot, cut off feet, cut off shoes, "
+        "bad anatomy, deformed, extra limbs, blurry, low quality, "
         "cartoon, illustration, painting, drawing, unrealistic"
     )
     return prompt, negative_prompt

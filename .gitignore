@@ -1,0 +1,25 @@
+# Model weights — too large for git
+models/llm/
+models/sdxl/
+models/*.zip
+models/before_after.png
+
+# Data
+data/synthetic/
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+*.egg-info/
+
+# Next.js
+frontend/.next/
+frontend/node_modules/
+
+# Env
+.env
+.env.local
+
+# macOS
+.DS_Store

@@ -80,7 +80,7 @@ Explanation: <why this works>"""
 
 
 def is_full_outfit(entry: dict) -> bool:
-    description = entry.get("description") or entry.get("caption") or ""
+    description = entry.get("text") or entry.get("description") or entry.get("caption") or ""
     if len(description) < 40:
         return False
     desc_lower = description.lower()
@@ -125,8 +125,8 @@ def convert_fashiongen_entry(client: anthropic.Anthropic, description: str) -> d
 def generate_fashiongen_pairs(client: anthropic.Anthropic, n: int) -> list[dict]:
     from datasets import load_dataset
 
-    print("Loading Fashion-Gen dataset...")
-    ds = load_dataset("rajistics/fashion-gen", split="train")
+    print("Loading fashion200k dataset...")
+    ds = load_dataset("Marqo/fashion200k", split="data")
     print(f"  Total entries: {len(ds)}")
 
     print("Filtering to full outfits...")
@@ -142,7 +142,7 @@ def generate_fashiongen_pairs(client: anthropic.Anthropic, n: int) -> list[dict]
     for entry in sampled:
         if len(pairs) >= n:
             break
-        description = entry.get("description") or entry.get("caption") or ""
+        description = entry.get("text") or entry.get("description") or entry.get("caption") or ""
         pair = convert_fashiongen_entry(client, description)
         attempts += 1
         if pair:

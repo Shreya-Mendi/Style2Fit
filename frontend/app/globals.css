@@ -1,0 +1,122 @@
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Inter:wght@200;300;400&display=swap');
+@import "tailwindcss";
+
+:root {
+  --ivory: #FAF8F5;
+  --cream: #F5F0E8;
+  --blush: #E8D5CB;
+  --rose: #D4A0A0;
+  --dusty-rose: #C08080;
+  --taupe: #9E8E82;
+  --warm-brown: #6B5B52;
+  --charcoal: #2C2420;
+}
+
+@theme inline {
+  --color-ivory: var(--ivory);
+  --color-cream: var(--cream);
+  --color-blush: var(--blush);
+  --color-rose: var(--rose);
+  --color-dusty-rose: var(--dusty-rose);
+  --color-taupe: var(--taupe);
+  --color-warm-brown: var(--warm-brown);
+  --color-charcoal: var(--charcoal);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--ivory);
+  color: var(--charcoal);
+  font-family: 'Inter', sans-serif;
+  font-weight: 200;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  cursor: none;
+}
+
+.font-serif {
+  font-family: 'Cormorant Garamond', serif;
+}
+
+::-webkit-scrollbar {
+  width: 3px;
+}
+::-webkit-scrollbar-track {
+  background: var(--cream);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--blush);
+  border-radius: 2px;
+}
+
+textarea:focus,
+input:focus,
+select:focus {
+  outline: none;
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.fade-up {
+  animation: fadeUp 0.9s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  opacity: 0;
+}
+
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+.marquee-track {
+  display: flex;
+  animation: marquee 20s linear infinite;
+  width: max-content;
+}
+
+@keyframes shimmer {
+  0% { background-position: -400% 0; }
+  100% { background-position: 400% 0; }
+}
+
+.shimmer {
+  background: linear-gradient(90deg, var(--cream) 25%, var(--blush) 50%, var(--cream) 75%);
+  background-size: 400% 100%;
+  animation: shimmer 2s infinite;
+}
+
+@keyframes reveal {
+  from { clip-path: inset(0 0 100% 0); }
+  to { clip-path: inset(0 0 0% 0); }
+}
+
+.reveal {
+  animation: reveal 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes spin-slow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.spin-slow {
+  animation: spin-slow 12s linear infinite;
+}
+
+@keyframes pulse-soft {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.pulse-soft {
+  animation: pulse-soft 2s ease-in-out infinite;
+}
