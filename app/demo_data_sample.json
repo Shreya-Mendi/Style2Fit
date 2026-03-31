@@ -1,0 +1,90 @@
+[
+  {
+    "id": "coffee_date_rainy",
+    "gender": "female",
+    "season": "fall",
+    "style": "clean girl",
+    "prompt": "Coffee date tomorrow morning, it's going to be rainy and chilly around 55°F.",
+    "before_text": "You could wear a nice sweater with some jeans and maybe boots. A jacket would be good for the rain. Some earrings could complete the look.",
+    "after_text": "Top: oversized cream ribbed knit sweater\nBottom: straight-leg dark wash jeans\nShoes: white leather low-top sneakers\nOuterwear: camel wool-blend trench coat\nAccessories: small gold hoop earrings, structured leather tote bag\nAesthetic: clean girl, effortless chic\nExplanation: The neutral palette keeps the look polished without being overdressed for a casual coffee date. The trench coat handles the rain while adding structure.",
+    "before_image_base64": null,
+    "after_image_base64": null
+  },
+  {
+    "id": "tech_internship",
+    "gender": "male",
+    "season": "spring",
+    "style": "smart casual",
+    "prompt": "First day at my tech internship, business casual dress code. I'm nervous.",
+    "before_text": "Wear a button-down shirt with khakis and dress shoes. Maybe add a belt. Keep it simple and professional.",
+    "after_text": "Top: light blue Oxford cloth button-down shirt, sleeves rolled to forearms\nBottom: tailored navy chinos with a slim taper\nShoes: clean white leather minimalist sneakers\nOuterwear: navy cotton blazer (optional, carry it)\nAccessories: simple leather watch, canvas messenger bag\nAesthetic: smart casual, polished but relaxed\nExplanation: The Oxford shirt reads professional without being stiff — rolling the sleeves softens the look and signals approachability.",
+    "before_image_base64": null,
+    "after_image_base64": null
+  },
+  {
+    "id": "indie_concert",
+    "gender": "neutral",
+    "season": "summer",
+    "style": "indie grunge",
+    "prompt": "Going to an indie rock concert Saturday night, want to look cool but stand for hours.",
+    "before_text": "Wear a band t-shirt with jeans and comfortable shoes. Maybe a jacket in case it gets cold.",
+    "after_text": "Top: vintage-wash black graphic band tee\nBottom: high-waisted straight-leg black jeans\nShoes: black leather chunky-sole boots\nOuterwear: oversized olive green utility jacket\nAccessories: layered silver chain necklaces, black leather crossbody bag\nAesthetic: indie grunge, effortless edge\nExplanation: All-black base creates a sleek canvas that fits the concert energy. Chunky boots are comfortable for standing and complete the aesthetic.",
+    "before_image_base64": null,
+    "after_image_base64": null
+  },
+  {
+    "id": "work_presentation",
+    "gender": "female",
+    "season": "winter",
+    "style": "power professional",
+    "prompt": "Big presentation at work Thursday. Want to look confident but not intimidating.",
+    "before_text": "A blazer with nice pants and heels would work well. Keep colors neutral. Add some jewelry.",
+    "after_text": "Top: fitted white silk blouse with a soft V-neck\nBottom: high-waisted charcoal wool trousers with a wide leg\nShoes: pointed-toe black leather block heels\nOuterwear: structured charcoal blazer, matching trousers\nAccessories: delicate gold pendant necklace, leather portfolio, pearl stud earrings\nAesthetic: power professional, refined authority\nExplanation: The matching charcoal suit projects authority and competence. The white silk blouse with a soft neckline prevents the look from feeling too rigid or unapproachable.",
+    "before_image_base64": null,
+    "after_image_base64": null
+  },
+  {
+    "id": "lisbon_trip",
+    "gender": "male",
+    "season": "spring",
+    "style": "Mediterranean casual",
+    "prompt": "Weekend trip to Lisbon in April. Need outfits for sightseeing and dinners.",
+    "before_text": "Pack some casual clothes like t-shirts, shorts, and comfortable walking shoes. Bring a jacket for evenings.",
+    "after_text": "Top: relaxed-fit white linen button-down shirt\nBottom: tailored beige chinos with a slight crop\nShoes: tan suede loafers, no socks\nOuterwear: lightweight navy cotton bomber jacket\nAccessories: woven leather belt, classic sunglasses, canvas weekender bag\nAesthetic: Mediterranean casual, versatile traveler\nExplanation: The linen shirt works untucked for sightseeing and tucked in for dinner — maximum versatility from one piece.",
+    "before_image_base64": null,
+    "after_image_base64": null
+  },
+  {
+    "id": "summer_wedding",
+    "gender": "female",
+    "season": "summer",
+    "style": "garden party",
+    "prompt": "Outdoor summer wedding guest, festive attire, 85°F and sunny.",
+    "before_text": "Wear a nice dress with heels and some accessories. Choose light colors for summer. Don't forget sunscreen.",
+    "after_text": "Dress: midi-length sage green floral wrap dress in lightweight chiffon\nShoes: strappy nude block-heel sandals\nOuterwear: none needed, bring a lightweight pashmina for evening\nAccessories: gold statement earrings, small beaded clutch, fresh flowers in hair optional\nAesthetic: garden party, romantic elegance\nExplanation: A wrap dress in sage green is wedding-appropriate without competing with the bridal party. Chiffon breathes in 85°F heat while maintaining an elegant drape.",
+    "before_image_base64": null,
+    "after_image_base64": null
+  },
+  {
+    "id": "rooftop_date",
+    "gender": "male",
+    "season": "fall",
+    "style": "urban cool",
+    "prompt": "First date at a trendy rooftop bar, Friday evening in October.",
+    "before_text": "Wear dark jeans with a nice shirt and maybe a jacket. Keep it casual but put together.",
+    "after_text": "Top: black ribbed turtleneck, fitted\nBottom: dark olive tailored cargo pants with a slim fit\nShoes: tan suede Chelsea boots\nOuterwear: cognac leather jacket\nAccessories: silver watch, subtle cologne, dark tortoiseshell sunglasses (for golden hour)\nAesthetic: urban sophisticate, understated cool\nExplanation: The black turtleneck is universally flattering and signals effort without overdressing. Chelsea boots bridge casual and dressed-up perfectly for a rooftop bar setting.",
+    "before_image_base64": null,
+    "after_image_base64": null
+  },
+  {
+    "id": "creative_interview",
+    "gender": "neutral",
+    "season": "winter",
+    "style": "creative professional",
+    "prompt": "Job interview at a creative agency, casual culture but I need to impress.",
+    "before_text": "Dress nicely but not too formal. Maybe smart casual with a blazer and jeans. Show some personality.",
+    "after_text": "Top: well-fitted black crewneck merino wool sweater\nBottom: dark indigo selvedge jeans, no distressing\nShoes: clean white minimalist leather sneakers\nOuterwear: unstructured charcoal sport coat\nAccessories: simple black leather portfolio, no-show socks, minimal silver ring\nAesthetic: creative professional, design-conscious\nExplanation: The unstructured sport coat over a crewneck sweater hits the sweet spot — more polished than their daily wear but not corporate.",
+    "before_image_base64": null,
+    "after_image_base64": null
+  }
+]
